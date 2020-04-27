@@ -15,31 +15,23 @@
       <div
         class="columns is-desktop is-mobile is-tablet is-multiline is centered"
       >
-        <div
-          class="column is-12-mobile is-4-desktop is-4-tablet"
+        <Character
           v-for="character in characters"
-          v-bind:key="character.id"
-        >
-          <div class="card">
-            <div class="card-header">
-              <img :src="character.image" :alt="character.name" />
-            </div>
-            <div class="card-content">
-              <h3 class="title is-size-4">{{ character.name }}</h3>
-              <button class="button is-success is-rounded is-small">
-                Ver mas
-              </button>
-            </div>
-          </div>
-        </div>
+          :key="character.id"
+          :character="character"
+        />
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import Character from "./components/Character";
 export default {
   name: "App",
+  components: {
+    Character,
+  },
   data() {
     return {
       characters: [],
@@ -57,6 +49,9 @@ export default {
           console.log(error);
         });
     },
+  },
+  created() {
+    this.fetch();
   },
 };
 </script>
