@@ -6,9 +6,25 @@
           <span class="has-text-success">R&M</span>
           <span class="subtitle">Personajes</span>
         </h1>
-        <button v-on:click="fetch" class="button is-success is-rounded">
-          Consultar
-        </button>
+
+        <div class="field has-addons is-pulled-right">
+          <div class="control">
+            <input
+              v-model="search"
+              class="input is-rounded"
+              type="text"
+              v-on:keyup.enter="searchData"
+            />
+          </div>
+          <div class="control">
+            <button
+              v-on:click="searchData"
+              class="button is-success is-rounded"
+            >
+              Buscar
+            </button>
+          </div>
+        </div>
       </div>
     </div>
     <div class="container">
@@ -52,12 +68,14 @@ export default {
       characters: [],
       page: 1,
       pages: 1,
+      search: "",
     };
   },
   methods: {
     fetch() {
       const params = {
         page: this.page,
+        name: this.search,
       };
 
       let result = this.$http
@@ -72,6 +90,10 @@ export default {
     },
     changePage(page) {
       this.page = page <= 0 || page > this.pages ? this.page : page;
+      this.fetch();
+    },
+    searchData() {
+      this.page = 1;
       this.fetch();
     },
   },
