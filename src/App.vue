@@ -21,6 +21,21 @@
           :character="character"
         />
       </div>
+      <nav class="pagination" role="navegation" aria-label="pagination">
+        <a class="pagination-previous" v-on:click="changePage(page - 1)"
+          >Anterior</a
+        >
+
+        <ul class="pagination-list">
+          <li>
+            <a class="pagination-link is-current">{{ page }}</a>
+          </li>
+        </ul>
+
+        <a class="pagination-next" v-on:click="changePage(page + 1)"
+          >Siguiente</a
+        >
+      </nav>
     </div>
   </div>
 </template>
@@ -35,19 +50,29 @@ export default {
   data() {
     return {
       characters: [],
+      page: 1,
+      pages: 1,
     };
   },
   methods: {
     fetch() {
+      const params = {
+        page: this.page,
+      };
+
       let result = this.$http
-        .get("https://rickandmortyapi.com/api/character")
+        .get("https://rickandmortyapi.com/api/character", { params })
         .then((res) => {
           this.characters = res.data.results;
-          console.log(res.data);
+          this.pages = res.data.info.pages;
         })
         .catch((error) => {
           console.log(error);
         });
+    },
+    changePage(page) {
+      this.page = page <= 0 || page > this.pages ? this.page : page;
+      this.fetch();
     },
   },
   created() {
