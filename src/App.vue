@@ -32,8 +32,9 @@
         class="columns is-desktop is-mobile is-tablet is-multiline is centered"
       >
         <Character
+          @showModal="showModal"
           v-for="character in characters"
-          :key="character.id"
+          v-on:key="character.id"
           :character="character"
         />
       </div>
@@ -53,6 +54,28 @@
         >
       </nav>
     </div>
+
+    <div class="modal" :class="{ 'is-active': modal }" v-if="modal">
+      <div class="modal-background" @click="modal = false"></div>
+      <div class="modal-card">
+        <div class="modal-card-head">
+          <p class="modal-card-title">{{ currentCaracter.name }}</p>
+        </div>
+        <div class="modal-card-body">
+          <p>Genero</p>
+          <strong>{{ currentCaracter.gender }}</strong>
+          <p>Estatus</p>
+          <strong>{{ currentCaracter.status }}</strong>
+          <p>Especie</p>
+          <strong>{{ currentCaracter.species }}</strong>
+          <p>Tipo</p>
+          <strong>{{ currentCaracter.type }}</strong>
+        </div>
+        <footer class="modal-card-foot">
+          <button class="button" @click="modal = false">Cerrar</button>
+        </footer>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -69,6 +92,8 @@ export default {
       page: 1,
       pages: 1,
       search: "",
+      modal: false,
+      currentCaracter: {},
     };
   },
   methods: {
@@ -95,6 +120,17 @@ export default {
     searchData() {
       this.page = 1;
       this.fetch();
+    },
+    showModal(id) {
+      this.fetchOne(id);
+    },
+    async fetchOne(id) {
+      let result = await this.$http.get(
+        `https://rickandmortyapi.com/api/character/${id}`
+      );
+      this.currentCaracter = result.data;
+      this.modal = true;
+      console.log(this.currentCaracter, "Personaje");
     },
   },
   created() {
